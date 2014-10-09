@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import urllib2
-import json
 import argparse
 
 from slapi import SlApi
@@ -13,7 +11,8 @@ class Lookup(SlApi):
     _endpoint_url = "http://api.sl.se/api2/typeahead.json"
     _api_key_key = "typeaheadApiKey"
 
-    def _transform_response_data_item(self, item):
+    @staticmethod
+    def _transform_response_data_item(item):
         return {
             "text": item["Name"],
             "id": item["SiteId"]
@@ -24,8 +23,7 @@ class Lookup(SlApi):
         url = url + "&searchstring=" + str(search_string)
         url = url + "&maxresults=" + str(max_results)
 
-        response = urllib2.urlopen(url).read()
-        jsondata = json.loads(response, "utf-8")
+        jsondata = self.make_api_call(url)
 
         return map(self._transform_response_data_item,
                    jsondata["ResponseData"])

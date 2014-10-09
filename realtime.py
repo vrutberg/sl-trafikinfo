@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import urllib2
-import json
 import argparse
 
 from slapi import SlApi
@@ -33,8 +31,7 @@ class RealTimeInfo(SlApi):
         url = url + "&siteid=" + str(site_id)
         url = url + "&timewindow=" + str(time_window)
 
-        response = urllib2.urlopen(url).read()
-        jsondata = json.loads(response, "utf-8")
+        jsondata = self.make_api_call(url)
         responsedata = jsondata["ResponseData"]
 
         all = []

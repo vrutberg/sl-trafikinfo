@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import urllib2
 
 
 class SlApi:
@@ -25,3 +26,8 @@ class SlApi:
 
     def get_base_url(self):
         return self._endpoint_url + "?key=" + self._get_api_key()
+
+    @staticmethod
+    def make_api_call(url):
+        response = urllib2.urlopen(url).read()
+        return json.loads(response, "utf-8")
