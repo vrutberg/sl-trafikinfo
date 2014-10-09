@@ -6,7 +6,7 @@ import argparse
 from slapi import SlApi
 
 
-class Lookup(SlApi):
+class LookupApi(SlApi):
 
     _endpoint_url = "http://api.sl.se/api2/typeahead.json"
     _api_key_key = "typeaheadApiKey"
@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    api = Lookup()
+    api = LookupApi()
 
     results = api.query(args.searchString, args.n)
 

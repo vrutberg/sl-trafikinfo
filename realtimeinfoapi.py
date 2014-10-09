@@ -4,10 +4,10 @@
 import argparse
 
 from slapi import SlApi
-from lookup import Lookup
+from lookupapi import LookupApi
 
 
-class RealTimeInfo(SlApi):
+class RealTimeInfoApi(SlApi):
 
     _endpoint_url = "http://api.sl.se/api2/realtimedepartures.json"
     _api_key_key = "realtimedeparturesApiKey"
@@ -56,8 +56,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    lookupApi = Lookup()
-    realTimeApi = RealTimeInfo()
+    lookupApi = LookupApi()
+    realTimeApi = RealTimeInfoApi()
 
     lookupResults = lookupApi.query(args.searchString, 1)
 
