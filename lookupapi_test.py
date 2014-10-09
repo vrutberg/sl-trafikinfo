@@ -3,10 +3,9 @@
 
 import unittest
 from lookupapi import LookupApi
+from testutils import UrlProxy
 import slapi
 
-
-openUrls = []
 
 class DummyRead():
     def __init__(self):
@@ -28,27 +27,25 @@ class DummyRead():
                u'":"18307287","Y":"59469630"}]}'
 
 
-def dummy_urlopen(url):
-    openUrls.append(url)
-    return DummyRead()
-
-
 def dummy_get_api_key(api):
     return "{0}:{1}".format(api._api_key_key, "secret-api-key")
 
 
 class LookupApiTestCase(unittest.TestCase):
+    urlProxy = UrlProxy(DummyRead())
+
     def setUp(self):
         self.originalUrlOpen = slapi.urllib2.urlopen
         self.originalGetApiKey = slapi.SlApi._get_api_key
 
         slapi.SlApi._get_api_key = dummy_get_api_key
-        slapi.urllib2.urlopen = dummy_urlopen
+        slapi.urllib2.urlopen = self.urlProxy.proxy_url
 
     def tearDown(self):
         slapi.urllib2.urlopen = self.originalUrlOpen
+        slapi.SlApi._get_api_key = self.originalGetApiKey
 
-    def test_lookupapi_looks_like_expected(self):
+    def test_api_looks_like_expected(self):
         self.assertIsNotNone(LookupApi)
 
         api = LookupApi()
@@ -60,17 +57,17 @@ class LookupApiTestCase(unittest.TestCase):
         data = api.query("telefonplan", 100)
         self.assertIsNotNone(data)
 
-        expectedUrl = "{0}?key={1}:{2}&searchstring={3}&maxresults={4}".format(api._endpoint_url,
-                                                                           api._api_key_key,
-                                                                           'secret-api-key',
-                                                                           "telefonplan",
-                                                                           100)
+        expected_url = "{0}?key={1}:{2}&searchstring={3}&maxresults={4}".format(api._endpoint_url,
+                                                                                api._api_key_key,
+                                                                                'secret-api-key',
+                                                                                "telefonplan",
+                                                                                100)
 
-        actualUrl = openUrls.pop()
+        actual_url = self.urlProxy.last_url()
 
-        self.assertEquals(actualUrl, expectedUrl)
+        self.assertEquals(actual_url, expected_url)
 
-        
+        self.assertEqual(len(data), 10)
 
 
 if __name__ == '__main__':
