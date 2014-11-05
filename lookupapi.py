@@ -11,13 +11,6 @@ class LookupApi(SlApi):
     _endpoint_url = "http://api.sl.se/api2/typeahead.json"
     _api_key_key = "typeaheadApiKey"
 
-    @staticmethod
-    def _transform_response_data_item(item):
-        return {
-            "text": item["Name"],
-            "id": item["SiteId"]
-        }
-
     def query(self, search_string, max_results):
         url = self.get_base_url()
         url = url + "&searchstring=" + str(search_string)
@@ -25,8 +18,7 @@ class LookupApi(SlApi):
 
         jsondata = self.make_api_call(url)
 
-        return map(self._transform_response_data_item,
-                   jsondata["ResponseData"])
+        return jsondata["ResponseData"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Search for train stations and "
@@ -41,4 +33,4 @@ if __name__ == "__main__":
     results = api.query(args.searchString, args.n)
 
     for item in results:
-        print "{0}: {1}".format(item["text"].encode("utf-8"), item["id"])
+        print "{0}: {1}".format(item["Name"].encode("utf-8"), item["SiteId"])
