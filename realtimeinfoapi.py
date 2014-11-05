@@ -20,8 +20,8 @@ class RealTimeInfoApi(SlApi):
         responsedata = jsondata["ResponseData"]
 
         all = []
-        all += responsedata["Buses"] if skip_buses == False else []
-        all += responsedata["Metros"] if skip_metro == False else []
+        all += responsedata["Buses"] if skip_buses is False else []
+        all += responsedata["Metros"] if skip_metro is False else []
 
         if destination is not None:
             return [item for item in all if item["Destination"] == destination]
