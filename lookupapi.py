@@ -7,9 +7,8 @@ from slapi import SlApi
 
 
 class LookupApi(SlApi):
-
-    _endpoint_url = "http://api.sl.se/api2/typeahead.json"
-    _api_key_key = "typeaheadApiKey"
+    def __init__(self):
+        SlApi.__init__(self, "http://api.sl.se/api2/typeahead.json", "typeaheadApiKey")
 
     def query(self, search_string, max_results):
         url = self.get_base_url()

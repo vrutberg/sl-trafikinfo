@@ -8,9 +8,8 @@ from lookupapi import LookupApi
 
 
 class RealTimeInfoApi(SlApi):
-
-    _endpoint_url = "http://api.sl.se/api2/realtimedepartures.json"
-    _api_key_key = "realtimedeparturesApiKey"
+    def __init__(self):
+        SlApi.__init__(self, "http://api.sl.se/api2/realtimedepartures.json", "realtimedeparturesApiKey")
 
     def query(self, site_id, time_window, destination=None, skip_buses=False, skip_metro=False):
         url = self.get_base_url()

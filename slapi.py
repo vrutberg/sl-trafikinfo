@@ -6,13 +6,11 @@ import urllib2
 
 
 class SlApi:
-    _endpoint_url = None
-    _api_key_key = None
-
     _configuration_object = None
 
-    def __init__(self):
-        return
+    def __init__(self, endpoint_url, api_key_key):
+        self._endpoint_url = endpoint_url
+        self._api_key_key = api_key_key
 
     def _get_api_key(self):
         try:
