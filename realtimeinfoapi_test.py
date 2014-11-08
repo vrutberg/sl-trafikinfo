@@ -45,15 +45,11 @@ class RealTimeInfoApiTestCase(unittest.TestCase):
         data = api.query(2602, 10)
         self.assertIsNotNone(data)
 
-        expected_url = "{0}?key={1}:{2}&siteid={3}&timewindow={4}".format(api._endpoint_url,
-                                                                                api._api_key_key,
-                                                                                'secret-api-key',
-                                                                                2602,
-                                                                                10)
-
         actual_url = self.urlProxy.last_url()
 
-        self.assertEquals(actual_url, expected_url)
+        self.assertTrue("?key={0}:{1}".format(api._api_key_key, "secret-api-key") in actual_url)
+        self.assertTrue("siteid=2602" in actual_url)
+        self.assertTrue("timewindow=10" in actual_url)
 
         self.assertEqual(len(data), 6)
 
