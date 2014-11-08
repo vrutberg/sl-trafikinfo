@@ -3,7 +3,7 @@
 
 import json
 import urllib2
-
+import urllib
 
 class SlApi:
     _configuration_object = None
@@ -34,7 +34,11 @@ class SlApi:
     def get_base_url(self):
         return self._endpoint_url + "?key=" + self._get_api_key()
 
-    @staticmethod
-    def make_api_call(url):
+    def make_api_call(self, query_params=None):
+        url = self.get_base_url()
+
+        if query_params is not None:
+            url += "&" + urllib.urlencode(query_params)
+
         response = urllib2.urlopen(url).read()
         return json.loads(response, "utf-8")

@@ -12,11 +12,12 @@ class RealTimeInfoApi(SlApi):
         SlApi.__init__(self, "http://api.sl.se/api2/realtimedepartures.json", "realtimedeparturesApiKey")
 
     def query(self, site_id, time_window, destination=None, skip_buses=False, skip_metro=False):
-        url = self.get_base_url()
-        url = url + "&siteid=" + str(site_id)
-        url = url + "&timewindow=" + str(time_window)
+        params = {
+            "siteid": site_id,
+            "timewindow": time_window
+        }
 
-        jsondata = self.make_api_call(url)
+        jsondata = self.make_api_call(params)
         responsedata = jsondata["ResponseData"]
 
         all = []

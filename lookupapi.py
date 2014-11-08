@@ -11,11 +11,12 @@ class LookupApi(SlApi):
         SlApi.__init__(self, "http://api.sl.se/api2/typeahead.json", "typeaheadApiKey")
 
     def query(self, search_string, max_results):
-        url = self.get_base_url()
-        url = url + "&searchstring=" + str(search_string)
-        url = url + "&maxresults=" + str(max_results)
+        params = {
+            "searchstring": search_string,
+            "maxresults": max_results
+        }
 
-        jsondata = self.make_api_call(url)
+        jsondata = self.make_api_call(params)
 
         return jsondata["ResponseData"]
 

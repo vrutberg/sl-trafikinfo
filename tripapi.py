@@ -3,6 +3,8 @@
 
 import argparse
 import urllib
+from datetime import datetime
+from time import time
 
 from travelplannerapi import TravelPlannerApi
 
@@ -11,13 +13,20 @@ class TripApi(TravelPlannerApi):
     def __init__(self):
         TravelPlannerApi.__init__(self, "http://api.sl.se/api2/TravelplannerV2/trip.json")
 
-    def query(self, origin_id, dest_id, num_trips=5):
-        url = self.get_base_url()
-        url = url + "&originId=" + urllib.quote_plus(origin_id)
-        url = url + "&destId=" + urllib.quote_plus(dest_id)
-        url = url + "&numTrips=" + str(num_trips)
+    def query(self, origin_id, dest_id, dep_date=None, dep_time=None, num_trips=5):
+        params = {
+            "originId": origin_id,
+            "destId": dest_id,
+            "numTrips": num_trips
+        }
 
-        return self.make_api_call(url)
+        if dep_date is not None:
+            params['date'] = dep_date
+
+        if dep_time is not None:
+            params['time'] = dep_time
+
+        return self.make_api_call(params)
 
 if __name__ == "__main__":
 
@@ -41,11 +50,22 @@ if __name__ == "__main__":
     parser.add_argument("origin", help="trip origin")
     parser.add_argument("destination", help="trip destination")
     parser.add_argument("-n", default=5, type=int, help="maximum number of trips returned")
+    parser.add_argument("-w", default=0, type=int, help="search for departures in x minutes")
 
     args = parser.parse_args()
 
+    dep_date = None
+    dep_time = None
+
+    if args.w > 0:
+        timestamp = int(time()) + args.w * 60
+        dt = datetime.fromtimestamp(timestamp)
+
+        dep_date = dt.strftime("%Y-%m-%d")
+        dep_time = dt.strftime("%H:%M")
+
     api = TripApi()
-    response = api.query(args.origin, args.destination, args.n)
+    response = api.query(args.origin, args.destination, dep_date, dep_time, args.n)
 
     trips = ensure_list(response['TripList']['Trip'])
 
